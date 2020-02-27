@@ -4,9 +4,17 @@ import java.io.File
 
 import scala.io.Source
 
+/**
+ * class LogAnalysis do the basic functioning for analysing the logs
+ */
 class LogAnalysis extends ReadFile {
-
-  def average(total:(Int,Int,Int)): Map[String, Int] = {
+  /**
+   * average method takes an input of Tuple3 and returns a map that has average number of errors,info and warnings
+   *
+   * @param total a Tuple3 that has the sum of all the errors,info and warning as 3 values
+   * @return
+   */
+  def average(total: (Int, Int, Int)): Map[String, Int] = {
     val noOfFiles = getFiles.length
     val avgErrors = total._1 / noOfFiles
     val avgInfo = total._2 / noOfFiles
@@ -14,6 +22,11 @@ class LogAnalysis extends ReadFile {
     Map("averageErrors" -> avgErrors, "averageInfo" -> avgInfo, "averageWarn" -> avgWarn)
   }
 
+  /**
+   * totalCount method calculates  and return the the sum of errors,info and warnings
+   *
+   * @return
+   */
   def totalCount: (Int, Int, Int) = {
     @scala.annotation.tailrec
     def operatingMethod(list: List[File], countError: Int, countInfo: Int, countWarn: Int): (Int, Int, Int) = {
