@@ -8,7 +8,7 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 /**
- * In class scheduler I have used scheduler so that the log files can be analyzed aster every fixed duration
+ * In class scheduler I have used scheduler so that the log files can be analyzed after every fixed duration
  */
 class Scheduler {
   /**

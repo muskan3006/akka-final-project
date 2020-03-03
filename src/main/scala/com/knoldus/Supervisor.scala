@@ -3,13 +3,13 @@ package com.knoldus
 
 import akka.actor.SupervisorStrategy.{Escalate, Stop}
 import akka.actor.{Actor, ActorKilledException, ActorLogging, ActorRef, DeathPactException, OneForOneStrategy, Props, SupervisorStrategy}
-import akka.pattern.ask
+import akka.pattern.{ask, pipe}
 import akka.routing.RoundRobinPool
 import akka.util.Timeout
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
 import scala.language.postfixOps
 
 /**
@@ -28,13 +28,12 @@ class Supervisor extends Actor with ReadFile with ActorLogging {
    */
   def receive: Receive = {
     case "total" => val list = find
-      val total = Future.sequence(list).map(_.last)
-      val result = Await.result(total, 100 second)
-      log.info(s"$result")
+      val total = Future.sequence(list).map(_.last).pipeTo(sender())
+         total.map(result =>  log.info(s"$result"))
       self ! total
     case total: Future[(Int, Int, Int)] => val average = total.map(allTotal => (worker ? allTotal).mapTo[Map[String, Int]]).flatten
-      val result = Await.result(average, 100 second)
-      log.info(s"$result")
+
+     average.map(result => log.info(s"$result"))
 
   }
 
